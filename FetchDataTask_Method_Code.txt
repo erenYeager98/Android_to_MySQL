@@ -1,0 +1,71 @@
+private class FetchDataTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                // Define the API URL
+                String apiUrl = "https://f538-2409-4072-8e94-3f0-5c4d-ca92-de92-ad92.ngrok-free.app/get_data";
+
+                // Create a URL object
+                URL url = new URL(apiUrl);
+
+                // Create an HTTP connection
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                // Set up the request method and read timeout
+                connection.setRequestMethod("GET");
+                connection.setReadTimeout(5000); // 5 seconds
+
+                // Get the response code
+                int responseCode = connection.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Read the response data
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+
+                    reader.close();
+
+                    // Return the JSON response as a string
+                    return response.toString();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String jsonResponse) {
+            jsonTextView.setText(jsonResponse);
+            if (jsonResponse != null) {
+                try {
+                    // Parse the JSON response
+                    JSONArray jsonArray = new JSONArray(jsonResponse);
+
+                    // Process the JSON data and display it in the TextView
+                    StringBuilder jsonData = new StringBuilder();
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String id = jsonObject.getString("id");
+                        String name = jsonObject.getString("name");
+                        String age = jsonObject.getString("age");
+                        jsonData.append("ID: ").append(id).append("\n");
+                        jsonData.append("Name: ").append(name).append("\n");
+                        jsonData.append("Age: ").append(age).append("\n\n");
+                    }
+                    jsonTextView.setText(jsonData);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                jsonTextView.setText("Failed to fetch data.");
+            }
+        }
+    }
