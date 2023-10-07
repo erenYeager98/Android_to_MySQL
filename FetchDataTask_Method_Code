@@ -3,7 +3,7 @@ private class FetchDataTask extends AsyncTask<Void, Void, String> {
         protected String doInBackground(Void... params) {
             try {
                 // Define the API URL
-                String apiUrl = "https://f538-2409-4072-8e94-3f0-5c4d-ca92-de92-ad92.ngrok-free.app/get_data";
+                String apiUrl = "Your_API_url_here!!";
 
                 // Create a URL object
                 URL url = new URL(apiUrl);
